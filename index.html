@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Test Chart</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/Chart.js"></script>
+    <script src="js/Chart.bundle.js"></script>
+    <link rel="stylesheet" type="text/css" media="screen" href="css/Chart.css" />
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m6 l6">
+                <canvas id="multi-bar-chart" height="480" width="500"></canvas>
+            </div>
+            <!-- <div class="col s6">6-columns (one-half)</div>
+            <div class="col s6">6-columns (one-half)</div> -->
+        </div>
+    </div>
+</body>
+<script>
+    $(document).ready(function(){
+        var ctx = document.getElementById('multi-bar-chart');
+        var chartData = [
+            {
+                cadre:"1",
+                count:120,
+                sdp:"SDP-A",
+                color:'red'
+            },
+            {
+                cadre:"1",
+                count:100,
+                sdp:"SDP-B",
+                color:'red'
+            },
+            {
+                cadre:"1",
+                count:167,
+                sdp:"other",
+                color:'red'
+            },
+            {
+                cadre:"2",
+                count:110,
+                sdp:"SDP-A",
+                color:'blue'
+            },
+            {
+                cadre:"2",
+                count:190,
+                sdp:"SDP-B",
+                color:'blue'
+            },
+            {
+                cadre:"2",
+                count:1090,
+                sdp:"other",
+                color:'blue'
+            },
+            {
+                cadre:"3",
+                count:1054,
+                sdp:"SDP-A",
+                color:'orange'
+            },
+            {
+                cadre:"3",
+                count:1001,
+                sdp:"SDP-B",
+                color:'green'
+            },
+            {
+                cadre:"3",
+                count:1500,
+                sdp:"other",
+                color:'green'
+            },
+            {
+                cadre:"other",
+                count:1400,
+                sdp:"other",
+                color:'yellow'
+            },
+            {
+                cadre:"other",
+                count:1365,
+                sdp:"SDP-A",
+                color:'yellow'
+            },
+            {
+                cadre:"other",
+                count:1020,
+                sdp:"SDP-B",
+                color:'yellow'
+            }
+        ]
+
+        // chart labels
+        var allLabels = [];
+        var allCadres = [];
+        var datasets = [];
+        for (const key in chartData) {
+            if (chartData.hasOwnProperty(key)) {
+                const cadre = chartData[key].cadre;
+                const sdp = chartData[key].sdp; 
+                const count = chartData[key].count;
+                const color = chartData[key].color;
+                const isCadre = datasets.hasOwnProperty(cadre);
+                if(allLabels.indexOf(sdp) == -1){
+                    allLabels.push(sdp);
+                }
+
+                if(allCadres.indexOf(cadre) == -1){
+                    allCadres.push(cadre);
+                }
+               
+                if(isCadre == false){
+                    datasets[cadre] = {
+                        label : cadre,
+                        backgroundColor:color,
+                        data:[count]
+                    };
+                }else{
+                    datasets[cadre].data.push(count)
+                }
+            }
+        }
+
+        var dataSet = [];
+        for (const iterator in datasets) {
+            var data = datasets[iterator].data;
+            for (var i=0;i<allCadres.length; i++) {
+                if(data[i] > 0){
+
+                }else{
+                    data.push(0);
+                }
+            }
+            datasets[iterator].data = data;
+            dataSet.push(datasets[iterator])
+        }
+        
+        // allLabels.push('Othere')
+        // chart data
+        const dataValue = {
+            labels:allLabels,
+            datasets:dataSet
+            // labels: ["Red", "Green", "Yellow", "Orange"],
+            // datasets: [
+            //     {
+            //         label: "1",
+            //         backgroundColor: "red",
+            //         data: [120,100,0,0]
+            //     },
+            //     {
+            //         label: "2",
+            //         backgroundColor: "green",
+            //         data: [110,0,0, 0]
+            //     },
+            //     {
+            //         label: "3",
+            //         backgroundColor: "yellow",
+            //         data: [1054,0,0, 0]
+            //     },
+            //     {
+            //         label: "other",
+            //         backgroundColor: "orange",
+            //         data: [0,1001,0, 1020]
+            //     }
+            // ]
+        };
+        console.log(dataValue)
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: dataValue,
+            options: {
+            legend: { display: true },
+            title: {
+                display: true,
+                text: 'Predicted world population (millions) in 2050'
+            }
+            }
+        });
+    })
+</script>
+</html>
